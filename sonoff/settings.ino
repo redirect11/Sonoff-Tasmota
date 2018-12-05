@@ -493,6 +493,7 @@ void SettingsDefaultSet2(void)
   strlcpy(Settings.mqtt_host, MQTT_HOST, sizeof(Settings.mqtt_host));
   Settings.mqtt_port = MQTT_PORT;
   strlcpy(Settings.mqtt_client, MQTT_CLIENT_ID, sizeof(Settings.mqtt_client));
+  strlcpy(Settings.mqtt_will_topic, MQTT_WILL_TOPIC, sizeof(Settings.mqtt_will_topic));
   strlcpy(Settings.mqtt_user, MQTT_USER, sizeof(Settings.mqtt_user));
   strlcpy(Settings.mqtt_pwd, MQTT_PASS, sizeof(Settings.mqtt_pwd));
   strlcpy(Settings.mqtt_topic, MQTT_TOPIC, sizeof(Settings.mqtt_topic));

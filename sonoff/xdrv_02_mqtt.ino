@@ -387,23 +387,23 @@ void MqttConnected(void)
     mqtt_connected = true;
     mqtt_retry_counter = 0;
 
-    GetTopic_P(stopic, TELE, mqtt_topic, S_LWT);
+    GetTopic_P(stopic, TELE, mqtt_topic, PSTR(""));
     snprintf_P(mqtt_data, sizeof(mqtt_data), PSTR(D_ONLINE));
     MqttPublish(stopic, true);
 
     // Satisfy iobroker (#299)
     mqtt_data[0] = '\0';
-    MqttPublishPrefixTopic_P(CMND, S_RSLT_POWER);
+    //MqttPublishPrefixTopic_P(CMND, S_RSLT_POWER);
 
-    GetTopic_P(stopic, CMND, mqtt_topic, PSTR("#"));
-    MqttSubscribe(stopic);
+    // GetTopic_P(stopic, CMND, mqtt_topic, PSTR(""));
+    // MqttSubscribe(stopic);
     if (strstr(Settings.mqtt_fulltopic, MQTT_TOKEN_TOPIC) != NULL) {
-      GetTopic_P(stopic, CMND, Settings.mqtt_grptopic, PSTR("#"));
+      GetTopic_P(stopic, CMND, Settings.mqtt_grptopic, PSTR(""));
       MqttSubscribe(stopic);
-      fallback_topic_flag = 1;
-      GetTopic_P(stopic, CMND, mqtt_client, PSTR("#"));
-      fallback_topic_flag = 0;
-      MqttSubscribe(stopic);
+      //fallback_topic_flag = 1;
+      //GetTopic_P(stopic, CMND, mqtt_client, PSTR(""));
+      //fallback_topic_flag = 0;
+      //MqttSubscribe(stopic);
     }
 
     XdrvCall(FUNC_MQTT_SUBSCRIBE);
@@ -549,7 +549,7 @@ void MqttReconnect(void)
 #if (MQTT_LIBRARY_TYPE == MQTT_PUBSUBCLIENT)
   MqttClient.setCallback(MqttDataHandler);
   MqttClient.setServer(Settings.mqtt_host, Settings.mqtt_port);
-  if (MqttClient.connect(mqtt_client, mqtt_user, mqtt_pwd, stopic, 1, true, mqtt_data)) {
+  if (MqttClient.connect(mqtt_client, mqtt_user, mqtt_pwd)) {
     MqttConnected();
   } else {
     MqttDisconnected(MqttClient.state());  // status codes are documented here http://pubsubclient.knolleary.net/api.html#state
@@ -719,7 +719,7 @@ bool MqttCommand(void)
           mqtt_data[0] = '\0';
         }
         MqttPublishDirect(stemp1, (index == 2));
-//        snprintf_P(mqtt_data, sizeof(mqtt_data), S_JSON_COMMAND_SVALUE, command, D_JSON_DONE);
+        snprintf_P(mqtt_data, sizeof(mqtt_data), S_JSON_COMMAND_SVALUE, command, D_JSON_DONE);
         mqtt_data[0] = '\0';
       }
     }
@@ -893,7 +893,7 @@ void MqttSaveSettings(void)
   MakeValidMqtt(1,stemp2);
   if ((strcmp(stemp, Settings.mqtt_topic)) || (strcmp(stemp2, Settings.mqtt_fulltopic))) {
     snprintf_P(mqtt_data, sizeof(mqtt_data), (Settings.flag.mqtt_offline) ? S_OFFLINE : "");
-    MqttPublishPrefixTopic_P(TELE, S_LWT, true);  // Offline or remove previous retained topic
+    //MqttPublishPrefixTopic_P(TELE, S_LWT, true);  // Offline or remove previous retained topic
   }
   strlcpy(Settings.mqtt_topic, stemp, sizeof(Settings.mqtt_topic));
   strlcpy(Settings.mqtt_fulltopic, stemp2, sizeof(Settings.mqtt_fulltopic));

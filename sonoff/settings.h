@@ -199,9 +199,9 @@ struct SYSCFG {
 
   byte          free_1D5[20];              // 1D5  Free since 5.12.0e
 
-  char          mqtt_host[33];             // 1E9
+  char          mqtt_host[48];             // 1E9
   uint16_t      mqtt_port;                 // 20A
-  char          mqtt_client[33];           // 20C
+  char          mqtt_client[48];           // 20C
   char          mqtt_user[33];             // 22D
   char          mqtt_pwd[33];              // 24E
   char          mqtt_topic[33];            // 26F
@@ -336,6 +336,7 @@ struct SYSCFG {
   uint16_t      web_refresh;               // 7CC
   char          mems[MAX_RULE_MEMS][10];   // 7CE
   char          rules[MAX_RULE_SETS][MAX_RULE_SIZE]; // 800 uses 512 bytes in v5.12.0m, 3 x 512 bytes in v5.14.0b
+  char          mqtt_will_topic[16];
                                            // E00 - FFF free locations
 } Settings;
 

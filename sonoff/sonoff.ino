@@ -258,10 +258,12 @@ void GetTopic_P(char *stopic, byte prefix, char *topic, const char* subtopic)
 
   snprintf_P(romram, sizeof(romram), subtopic);
   if (fallback_topic_flag) {
+    AddLog_P(LOG_LEVEL_INFO, S_LOG_MQTT, PSTR("Fallback"));
     fulltopic = FPSTR(kPrefixes[prefix]);
     fulltopic += F("/");
     fulltopic += mqtt_client;
   } else {
+    AddLog_P(LOG_LEVEL_INFO, S_LOG_MQTT, PSTR("Non fallback"));
     fulltopic = Settings.mqtt_fulltopic;
     if ((0 == prefix) && (-1 == fulltopic.indexOf(F(MQTT_TOKEN_PREFIX)))) {
       fulltopic += F("/" MQTT_TOKEN_PREFIX);  // Need prefix for commands to handle mqtt topic loops
@@ -280,8 +282,11 @@ void GetTopic_P(char *stopic, byte prefix, char *topic, const char* subtopic)
   }
   fulltopic.replace(F("#"), "");
   fulltopic.replace(F("//"), "/");
-  if (!fulltopic.endsWith("/")) fulltopic += "/";
-  snprintf_P(stopic, TOPSZ, PSTR("%s%s"), fulltopic.c_str(), romram);
+  //if (!fulltopic.endsWith("/")) fulltopic += "/";
+  snprintf_P(stopic, TOPSZ, PSTR("%s"), fulltopic.c_str());//, romram);
+  // AddLog_P(LOG_LEVEL_INFO, S_LOG_MQTT, fulltopic.c_str());
+  // AddLog_P(LOG_LEVEL_INFO, S_LOG_MQTT, romram);
+  // AddLog_P(LOG_LEVEL_INFO, S_LOG_MQTT, stopic);
 }
 
 char* GetStateText(byte state)
@@ -1310,7 +1315,7 @@ boolean SendKey(byte key, byte device, byte state)
   Format(key_topic, tmp, sizeof(key_topic));
   if (Settings.flag.mqtt_enabled && MqttIsConnected() && (strlen(key_topic) != 0) && strcmp(key_topic, "0")) {
     if (!key && (device > devices_present)) device = 1;                                             // Only allow number of buttons up to number of devices
-    GetTopic_P(stopic, CMND, key_topic, GetPowerDevice(scommand, device, sizeof(scommand), key));   // cmnd/switchtopic/POWERx
+    //GetTopic_P(stopic, CMND, key_topic, GetPowerDevice(scommand, device, sizeof(scommand), key));   // cmnd/switchtopic/POWERx
     if (9 == state) {
       mqtt_data[0] = '\0';
     } else {
